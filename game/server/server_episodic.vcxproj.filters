@@ -1790,6 +1790,21 @@
     <ClInclude Include="tte\grenade_sticky.h">
       <Filter>Source Files\TTE</Filter>
     </ClInclude>
+    <ClInclude Include="tte\grenade_yeet.h">
+      <Filter>Source Files\TTE</Filter>
+    </ClInclude>
+    <ClInclude Include="tte\hl1_ai_basenpc.h">
+      <Filter>Source Files\TTE</Filter>
+    </ClInclude>
+    <ClInclude Include="tte\hl1_npc_talker.h">
+      <Filter>Source Files\TTE</Filter>
+    </ClInclude>
+    <ClInclude Include="tte\npc_protagonist_mc.h">
+      <Filter>Source Files\TTE</Filter>
+    </ClInclude>
+    <ClInclude Include="tte\npc_thotdoggo.h">
+      <Filter>Source Files\TTE</Filter>
+    </ClInclude>
     <ClInclude Include="tte\weapon_bbar.h">
       <Filter>Source Files\TTE</Filter>
     </ClInclude>
@@ -3517,13 +3532,46 @@
     <ClCompile Include="..\..\game\shared\usermessages.cpp">
       <Filter>Source Files\temporary entities</Filter>
     </ClCompile>
+    <ClCompile Include="tte\earrape_generic.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\env_bossbar.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
     <ClCompile Include="tte\flashbang_projectile.cpp">
       <Filter>Source Files\TTE</Filter>
     </ClCompile>
     <ClCompile Include="tte\grenade_sticky.cpp">
       <Filter>Source Files\TTE</Filter>
     </ClCompile>
+    <ClCompile Include="tte\grenade_yeet.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\hl1_ai_basenpc.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\hl1_npc_talker.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\item_crackcrate.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\item_custom_healthkit.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\logic_convarcheck.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\npc_protagonist_mc.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\npc_thotdoggo.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
     <ClCompile Include="tte\weapon_bbar.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\weapon_binoculars.cpp">
       <Filter>Source Files\TTE</Filter>
     </ClCompile>
     <ClCompile Include="tte\weapon_deagle.cpp">
@@ -3560,6 +3608,9 @@
       <Filter>Source Files\TTE</Filter>
     </ClCompile>
     <ClCompile Include="tte\weapon_striker.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
+    <ClCompile Include="tte\weapon_sunnyd.cpp">
       <Filter>Source Files\TTE</Filter>
     </ClCompile>
     <ClCompile Include="tte\weapon_tommy.cpp">

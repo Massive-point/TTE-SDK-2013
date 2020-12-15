@@ -3418,6 +3418,9 @@
     <ClCompile Include="tte\fx_tte_weaponfx.cpp">
       <Filter>Source Files\TTE</Filter>
     </ClCompile>
+    <ClCompile Include="tte\hud_bossbar.cpp">
+      <Filter>Source Files\TTE</Filter>
+    </ClCompile>
     <ClCompile Include="tte\tte_hud_scope.cpp">
       <Filter>Source Files\TTE</Filter>
     </ClCompile>
