@@ -88,16 +88,16 @@
 #endif
 
 #ifdef TACTICALTHOTS
-static ConVar tte_leaning_speed( "tte_leaning_speed", "1.7" );
+	static ConVar tte_leaning_speed( "tte_leaning_speed", "1.7" );
 
-// tte lean left/right
+	// tte lean left/right
 #define PLAYER_LEAN_TIME tte_leaning_speed.GetFloat()
 #define PLAYER_LEAN_ANGLE_OFFSET 16.0
 #define PLAYER_LEAN_VIEW_OFFSET 16.0
 
-// vietnam subtle viewbob
-ConVar tte_viewbob_enabled( "tte_viewbob_enabled", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED, "Toggle view bob." );
-ConVar tte_viewbob_scale( "tte_viewbob_scale", "1.0", FCVAR_ARCHIVE | FCVAR_REPLICATED );
+	// vietnam subtle viewbob
+	ConVar tte_viewbob_enabled("tte_viewbob_enabled", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED, "Toggle view bob.");
+	ConVar tte_viewbob_scale("tte_viewbob_scale", "1.0", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 #endif
 
 #ifdef CLIENT_DLL
@@ -177,18 +177,36 @@ void CBasePlayer::ItemPreFrame()
 	Vector vDummy;
 	QAngle angDummy;
 
-	CalcViewLean( vDummy, angDummy );
+	CalcViewLean(vDummy, angDummy);
 #endif
 
 	// Handle use events
 	PlayerUse();
 
-	CBaseCombatWeapon *pActive = GetActiveWeapon();
+	//Tony; re-ordered this for efficiency and to make sure that certain things happen in the correct order!
+    if ( gpGlobals->curtime < m_flNextAttack )
+	{
+		return;
+	}
 
+	if (!GetActiveWeapon())
+		return;
+
+#if defined( CLIENT_DLL )
+	// Not predicting this weapon
+	if ( !GetActiveWeapon()->IsPredicted() )
+		return;
+#endif
+
+	GetActiveWeapon()->ItemPreFrame();
+
+	CBaseCombatWeapon *pWeapon;
+
+	CBaseCombatWeapon *pActive = GetActiveWeapon();
 	// Allow all the holstered weapons to update
 	for ( int i = 0; i < WeaponCount(); ++i )
 	{
-		CBaseCombatWeapon *pWeapon = GetWeapon( i );
+		pWeapon = GetWeapon( i );
 
 		if ( pWeapon == NULL )
 			continue;
@@ -198,20 +216,6 @@ void CBasePlayer::ItemPreFrame()
 
 		pWeapon->ItemHolsterFrame();
 	}
-
-    if ( gpGlobals->curtime < m_flNextAttack )
-		return;
-
-	if (!pActive)
-		return;
-
-#if defined( CLIENT_DLL )
-	// Not predicting this weapon
-	if ( !pActive->IsPredicted() )
-		return;
-#endif
-
-	pActive->ItemPreFrame();
 }
 
 //-----------------------------------------------------------------------------
@@ -842,7 +846,7 @@ Vector CBasePlayer::Weapon_ShootPosition( )
 	// HACKHACK!! We update only shoot position vector when leaning, while EyePosition() still returns unleaned vector.
 	// Actually, we must update EyePosition(), but that will introduce camera lagging while playing leaning sequence
 	// TODO!! Revisit!
-	EyeVectors( &vForward, &vRight, &vUp );
+	EyeVectors(&vForward, &vRight, &vUp);
 
 	return EyePosition() + m_flCalculatedViewOffsetRight * vRight;
 #else
@@ -1648,56 +1652,56 @@ void CBasePlayer::CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& f
 	// tte lean left/right
 	Vector vUp, vRight, vForward;
 
-	EyeVectors( &vForward, &vRight, &vUp );
+	EyeVectors(&vForward, &vRight, &vUp);
 
 	eyeOrigin += m_flCalculatedViewOffsetRight * vRight;
 	eyeAngles.z += m_flCalculatedViewAngleZ;
 
 	// vietnam subtle view bob
-	if( tte_viewbob_enabled.GetBool() )
+	if (tte_viewbob_enabled.GetBool())
 	{
 		static float flSinInterp = 0.0f;
 
-		if( GetAbsVelocity().AsVector2D().Length() > 60.0f )
+		if (GetAbsVelocity().AsVector2D().Length() > 60.0f)
 		{
 			flSinInterp += 0.02f;
-			flSinInterp = MIN( flSinInterp, 1.0f );
+			flSinInterp = MIN(flSinInterp, 1.0f);
 		}
 		else
 		{
 			flSinInterp -= 0.2f;
-			flSinInterp = MAX( flSinInterp, 0.0f );
+			flSinInterp = MAX(flSinInterp, 0.0f);
 		}
 
-		float flSpeed = 0.5f * RemapValClamped( GetAbsVelocity().AsVector2D().Length(), 0.0f, 220.0f, 0.0f, 1.0f );
-		float flOscillateWalking = flSinInterp * sin( gpGlobals->curtime * 15.0f ) * 1.85f;
-		float flOscillateRunning = flSinInterp * sin( gpGlobals->curtime * 18.0f ) * 3.0f;
-		float flOscillateDucking = flSinInterp * sin( gpGlobals->curtime * 5.0f ) * 1.5f;
-		float flOscillateYAWRunning = flSinInterp * sin( gpGlobals->curtime * 10.0f ) * 1.25f;
+		float flSpeed = 0.5f * RemapValClamped(GetAbsVelocity().AsVector2D().Length(), 0.0f, 220.0f, 0.0f, 1.0f);
+		float flOscillateWalking = flSinInterp * sin(gpGlobals->curtime * 15.0f) * 1.85f;
+		float flOscillateRunning = flSinInterp * sin(gpGlobals->curtime * 18.0f) * 3.0f;
+		float flOscillateDucking = flSinInterp * sin(gpGlobals->curtime * 5.0f) * 1.5f;
+		float flOscillateYAWRunning = flSinInterp * sin(gpGlobals->curtime * 10.0f) * 1.25f;
 
-		if( GetAbsVelocity().Length() < 60.0f || /*IsProne() ||*/ !GetGroundEntity() )
+		if (GetAbsVelocity().Length() < 60.0f || /*IsProne() ||*/ !GetGroundEntity())
 		{
-			m_flMainOsscilate = Approach( 0.0f, m_flMainOsscilate, 0.5f * gpGlobals->frametime * 10.0f );
+			m_flMainOsscilate = Approach(0.0f, m_flMainOsscilate, 0.5f * gpGlobals->frametime * 10.0f);
 		}
 		else
 		{
-			if( GetAbsVelocity().Length() >= 220.0f )
+			if (GetAbsVelocity().Length() >= 220.0f)
 			{
-				m_flMainOsscilate = Approach( flOscillateRunning, m_flMainOsscilate, flSpeed * gpGlobals->frametime * 100.0f );
+				m_flMainOsscilate = Approach(flOscillateRunning, m_flMainOsscilate, flSpeed * gpGlobals->frametime * 100.0f);
 			}
-			else if( GetAbsVelocity().Length() >= 150.0f )
+			else if (GetAbsVelocity().Length() >= 150.0f)
 			{
-				m_flMainOsscilate = Approach( flOscillateWalking, m_flMainOsscilate, flSpeed * gpGlobals->frametime * 100.0f );
+				m_flMainOsscilate = Approach(flOscillateWalking, m_flMainOsscilate, flSpeed * gpGlobals->frametime * 100.0f);
 			}
 			else
 			{
-				m_flMainOsscilate = Approach( flOscillateDucking, m_flMainOsscilate, flSpeed * gpGlobals->frametime * 100.0f );
-			}	
+				m_flMainOsscilate = Approach(flOscillateDucking, m_flMainOsscilate, flSpeed * gpGlobals->frametime * 100.0f);
+			}
 		}
-		
+
 		eyeOrigin += vUp * m_flMainOsscilate * tte_viewbob_scale.GetFloat();
 		eyeOrigin += vRight * m_flMainOsscilate * 0.25f * tte_viewbob_scale.GetFloat();
-		eyeAngles[YAW] += Lerp( RemapValClamped( GetAbsVelocity().Length(), 180.0f, 250.0f, 0.0f, 1.0f ), 0.0f, flOscillateYAWRunning ) * 0.4f * flSpeed * tte_viewbob_scale.GetFloat();
+		eyeAngles[YAW] += Lerp(RemapValClamped(GetAbsVelocity().Length(), 180.0f, 250.0f, 0.0f, 1.0f), 0.0f, flOscillateYAWRunning) * 0.4f * flSpeed * tte_viewbob_scale.GetFloat();
 	}
 #endif
 
@@ -1859,24 +1863,24 @@ void CBasePlayer::CalcViewRoll( QAngle& eyeAngles )
 // Purpose: Check if we can lean and nothing blocks us
 // Input:	bLeftRight - true(Left) - false(Right)
 //-----------------------------------------------------------------------------
-bool CBasePlayer::CheckIsPossibleToLean( float flLeanDist, Vector vForward, Vector vRight, bool bLeftRight )
+bool CBasePlayer::CheckIsPossibleToLean(float flLeanDist, Vector vForward, Vector vRight, bool bLeftRight)
 {
 	float IsNegative = bLeftRight ? -1.0f : 1.0f;
 
 	trace_t tr;
-	UTIL_TraceHull( BaseClass::EyePosition(), BaseClass::EyePosition() + IsNegative * ( vRight * ( flLeanDist + 16.0f ) ),	// additional +16 is our bounding box
-					-Vector( 6.0f, 6.0f, 6.0f ), Vector( 6.0f, 6.0f, 6.0f ), MASK_ALL, this, COLLISION_GROUP_NONE, &tr );
+	UTIL_TraceHull(BaseClass::EyePosition(), BaseClass::EyePosition() + IsNegative * (vRight * (flLeanDist + 16.0f)),	// additional +16 is our bounding box
+		-Vector(6.0f, 6.0f, 6.0f), Vector(6.0f, 6.0f, 6.0f), MASK_ALL, this, COLLISION_GROUP_NONE, &tr);
 
-	if( tr.DidHit() )
+	if (tr.DidHit())
 	{
 		return false;
 	}
 	else
 	{	// additional check if something will hit our face when camera will be at leaned position
-		UTIL_TraceLine( BaseClass::EyePosition() + vForward * 16.0f, BaseClass::EyePosition() + IsNegative * ( vRight * ( flLeanDist + 16.0f ) ),
-						 MASK_ALL, this, COLLISION_GROUP_NONE, &tr );
-		
-		if( tr.DidHit() )
+		UTIL_TraceLine(BaseClass::EyePosition() + vForward * 16.0f, BaseClass::EyePosition() + IsNegative * (vRight * (flLeanDist + 16.0f)),
+			MASK_ALL, this, COLLISION_GROUP_NONE, &tr);
+
+		if (tr.DidHit())
 		{
 			return false;
 		}
@@ -1888,55 +1892,55 @@ bool CBasePlayer::CheckIsPossibleToLean( float flLeanDist, Vector vForward, Vect
 //-----------------------------------------------------------------------------
 // Purpose: Calc leaning angles/offset
 //-----------------------------------------------------------------------------
-void CBasePlayer::CalcViewLean( Vector &eyeOrigin, QAngle &eyeAngles )
+void CBasePlayer::CalcViewLean(Vector &eyeOrigin, QAngle &eyeAngles)
 {
 	// vietnam lean left/right
 	Vector vUp, vRight, vForward;
 
-	EyeVectors( &vForward, &vRight, &vUp );
+	EyeVectors(&vForward, &vRight, &vUp);
 
 #ifdef GAME_DLL
-	if( ( m_nButtons & IN_LEANLEFT ) && ( m_nButtons & IN_LEANRIGHT ) == 0 || ( m_bToggledLeanLeft && !m_bToggledLeanRight ) )
+	if ((m_nButtons & IN_LEANLEFT) && (m_nButtons & IN_LEANRIGHT) == 0 || (m_bToggledLeanLeft && !m_bToggledLeanRight))
 #else
-	if( ( m_nButtons & IN_LEANLEFT ) && ( m_nButtons & IN_LEANRIGHT ) == 0 )
+	if ((m_nButtons & IN_LEANLEFT) && (m_nButtons & IN_LEANRIGHT) == 0)
 #endif
 	{
-		if( CheckIsPossibleToLean( PLAYER_LEAN_VIEW_OFFSET, vForward, vRight, true ) )
+		if (CheckIsPossibleToLean(PLAYER_LEAN_VIEW_OFFSET, vForward, vRight, true))
 		{
-			m_flCalculatedViewAngleZ = Approach( -PLAYER_LEAN_ANGLE_OFFSET, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME );
-			m_flCalculatedViewOffsetRight = Approach( -PLAYER_LEAN_VIEW_OFFSET, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME );
+			m_flCalculatedViewAngleZ = Approach(-PLAYER_LEAN_ANGLE_OFFSET, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME);
+			m_flCalculatedViewOffsetRight = Approach(-PLAYER_LEAN_VIEW_OFFSET, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME);
 		}
 		else
 		{
 			m_nButtons &= ~IN_LEANLEFT;
 
-			m_flCalculatedViewOffsetRight = Approach( 0.0f, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME );
-			m_flCalculatedViewAngleZ = Approach( 0.0f, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME );
+			m_flCalculatedViewOffsetRight = Approach(0.0f, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME);
+			m_flCalculatedViewAngleZ = Approach(0.0f, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME);
 		}
 	}
 #ifdef GAME_DLL
-	else if( ( m_nButtons & IN_LEANRIGHT ) && ( m_nButtons & IN_LEANLEFT ) == 0 || ( !m_bToggledLeanLeft && m_bToggledLeanRight ) )
+	else if ((m_nButtons & IN_LEANRIGHT) && (m_nButtons & IN_LEANLEFT) == 0 || (!m_bToggledLeanLeft && m_bToggledLeanRight))
 #else
-	else if( ( m_nButtons & IN_LEANRIGHT ) && ( m_nButtons & IN_LEANLEFT ) == 0 )
+	else if ((m_nButtons & IN_LEANRIGHT) && (m_nButtons & IN_LEANLEFT) == 0)
 #endif
 	{
-		if( CheckIsPossibleToLean( PLAYER_LEAN_VIEW_OFFSET, vForward, vRight, false ) )
+		if (CheckIsPossibleToLean(PLAYER_LEAN_VIEW_OFFSET, vForward, vRight, false))
 		{
-			m_flCalculatedViewAngleZ = Approach( PLAYER_LEAN_ANGLE_OFFSET, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME );
-			m_flCalculatedViewOffsetRight = Approach( PLAYER_LEAN_VIEW_OFFSET, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME );
+			m_flCalculatedViewAngleZ = Approach(PLAYER_LEAN_ANGLE_OFFSET, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME);
+			m_flCalculatedViewOffsetRight = Approach(PLAYER_LEAN_VIEW_OFFSET, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME);
 		}
 		else
 		{
 			m_nButtons &= ~IN_LEANRIGHT;
 
-			m_flCalculatedViewOffsetRight = Approach( 0.0f, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME );
-			m_flCalculatedViewAngleZ = Approach( 0.0f, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME );
+			m_flCalculatedViewOffsetRight = Approach(0.0f, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME);
+			m_flCalculatedViewAngleZ = Approach(0.0f, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME);
 		}
 	}
 	else
 	{
-		m_flCalculatedViewOffsetRight = Approach( 0.0f, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME );
-		m_flCalculatedViewAngleZ = Approach( 0.0f, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME );
+		m_flCalculatedViewOffsetRight = Approach(0.0f, m_flCalculatedViewOffsetRight, PLAYER_LEAN_TIME);
+		m_flCalculatedViewAngleZ = Approach(0.0f, m_flCalculatedViewAngleZ, PLAYER_LEAN_TIME);
 	}
 
 	eyeOrigin += m_flCalculatedViewOffsetRight * vRight;
@@ -1944,27 +1948,27 @@ void CBasePlayer::CalcViewLean( Vector &eyeOrigin, QAngle &eyeAngles )
 }
 
 #ifdef GAME_DLL
-void CC_ToggleLeanLeft( void )
+void CC_ToggleLeanLeft(void)
 {
 	CBasePlayer *pPlayer = UTIL_PlayerByIndex(1);
 
-	if( pPlayer )
+	if (pPlayer)
 	{
 		pPlayer->ToggleLeanLeft();
 	}
 }
-static ConCommand toggle_leanleft( "toggle_leanleft", CC_ToggleLeanLeft, "Toggle leaning..\n", FCVAR_CHEAT );
+static ConCommand toggle_leanleft("toggle_leanleft", CC_ToggleLeanLeft, "Toggle leaning..\n", FCVAR_CHEAT);
 
-void CC_ToggleLeanRight( void )
+void CC_ToggleLeanRight(void)
 {
 	CBasePlayer *pPlayer = UTIL_PlayerByIndex(1);
 
-	if( pPlayer )
+	if (pPlayer)
 	{
 		pPlayer->ToggleLeanRight();
 	}
 }
-static ConCommand toggle_leanright( "toggle_leanright", CC_ToggleLeanRight, "Toggle leaning..\n", FCVAR_CHEAT );
+static ConCommand toggle_leanright("toggle_leanright", CC_ToggleLeanRight, "Toggle leaning..\n", FCVAR_CHEAT);
 #endif
 #endif
 

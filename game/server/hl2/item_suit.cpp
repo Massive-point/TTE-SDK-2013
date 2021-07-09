@@ -32,7 +32,7 @@ public:
 		Precache( );
 		SetModel( "models/items/hevsuit.mdl" );
 		BaseClass::Spawn( );
-		//
+		//TTE
 		AddEffects(EF_NODRAW);
 		CollisionProp()->UseTriggerBounds( false, 0 );
 	}
@@ -50,7 +50,11 @@ public:
 		else
 			UTIL_EmitSoundSuit(pPlayer->edict(), "!HEV_AAx");	// long version of suit logon
 
+#ifdef MAPBASE
+		pPlayer->EquipSuit(!HasSpawnFlags(SF_SUIT_SHORTLOGON));
+#else
 		pPlayer->EquipSuit();
+#endif
 				
 		return true;
 	}

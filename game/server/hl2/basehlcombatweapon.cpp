@@ -71,7 +71,7 @@ void CHLMachineGun::PrimaryAttack( void )
 	while ( m_flNextPrimaryAttack <= gpGlobals->curtime )
 	{
 #ifdef TACTICALTHOTS
-		WeaponSound( GetAttackSound(), m_flNextPrimaryAttack );
+		WeaponSound(GetAttackSound(), m_flNextPrimaryAttack);
 #else
 		WeaponSound(SINGLE, m_flNextPrimaryAttack);
 #endif
@@ -83,7 +83,7 @@ void CHLMachineGun::PrimaryAttack( void )
 		iBulletsToFire++;
 #endif
 	}
-	
+
 	// Make sure we don't fire more than the amount in the clip, if this weapon uses clips
 	if ( UsesClipsForAmmo1() )
 	{
@@ -103,7 +103,7 @@ void CHLMachineGun::PrimaryAttack( void )
 #ifdef TACTICALTHOTS
 	info.m_vecSpread = GetBulletSpread();
 #else
-	info.m_vecSpread = pPlayer->GetAttackSpread( this );
+	info.m_vecSpread = pPlayer->GetAttackSpread(this);
 #endif
 	info.m_flDistance = MAX_TRACE_LENGTH;
 	info.m_iAmmoType = m_iPrimaryAmmoType;
@@ -429,7 +429,6 @@ void CHLSelectFireMachineGun::BurstThink( void )
 #ifdef TACTICALTHOTS
 		m_flDelayBetweenBursts = gpGlobals->curtime + 0.01f;
 #endif
-
 		// idle immediately to stop the firing animation
 		SetWeaponIdleTime( gpGlobals->curtime );
 		return;

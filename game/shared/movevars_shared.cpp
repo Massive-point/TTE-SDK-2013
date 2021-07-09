@@ -80,7 +80,7 @@ ConVar	sv_waterfriction(  "sv_waterfriction", "1", FCVAR_NOTIFY | FCVAR_REPLICAT
 ConVar	sv_footsteps	( "sv_footsteps", "1", FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "Play footstep sound for players" );
 ConVar	sv_rollspeed	( "sv_rollspeed", "200", FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
 #ifdef TACTICALTHOTS
-ConVar	sv_rollangle	( "sv_rollangle", "3", FCVAR_NOTIFY | FCVAR_REPLICATED, "Max view roll angle");
+ConVar	sv_rollangle	("sv_rollangle", "3", FCVAR_NOTIFY | FCVAR_REPLICATED, "Max view roll angle");
 #else
 ConVar	sv_rollangle	( "sv_rollangle", "0", FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "Max view roll angle");
 #endif

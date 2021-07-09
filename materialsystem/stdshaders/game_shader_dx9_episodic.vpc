@@ -5,13 +5,9 @@
 //-----------------------------------------------------------------------------
 
 $Macro SRCDIR		"..\.."
-$Macro GAMENAME "TTE"
-
-// I hate VPC files
-$Conditional "TELVYDLL" "1"
-
+$Macro GAMENAME "mod_episodic"
 $Include "$SRCDIR\materialsystem\stdshaders\game_shader_dx9_base.vpc"
 
-$Project "Shaders (TTE)"
+$Project "Shaders (Episodic)"
 {
 }

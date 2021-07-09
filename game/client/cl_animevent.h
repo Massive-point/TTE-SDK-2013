@@ -30,7 +30,6 @@
 #define CL_EVENT_EJECTBRASS2		6011	// Eject a brass shell from attachment 2
 #endif
 
-
 #define CL_EVENT_DISPATCHEFFECT0	9001	// Hook into a DispatchEffect on attachment 0
 #define CL_EVENT_DISPATCHEFFECT1	9011	// Hook into a DispatchEffect on attachment 1
 #define CL_EVENT_DISPATCHEFFECT2	9021	// Hook into a DispatchEffect on attachment 2

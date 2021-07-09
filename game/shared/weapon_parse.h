@@ -21,7 +21,7 @@ typedef unsigned short WEAPON_FILE_INFO_HANDLE;
 //--------------------------------------------------------------------------------------------------------
 enum CWeaponType
 {
-	WEAPONTYPE_MELEE=0,	
+	WEAPONTYPE_MELEE = 0,
 	WEAPONTYPE_PISTOL,
 	WEAPONTYPE_REVOLVER,
 	WEAPONTYPE_SUBMACHINEGUN,
@@ -98,6 +98,10 @@ public:
 public:	
 	bool					bParsedScript;
 	bool					bLoadedHudElements;
+#ifdef MAPBASE
+	// Indicates the currently loaded data is from a map-specific script and should be flushed.
+	bool					bCustom;
+#endif
 
 // SHARED
 	char					szClassName[MAX_WEAPON_STRING];
@@ -131,6 +135,7 @@ public:
 	// This helps cl_righthand make the decision about whether to flip the model or not.
 	bool					m_bBuiltRightHanded;
 	bool					m_bAllowFlipping;	// False to disallow flipping the model, regardless of whether
+
 												// it is built left or right handed.
 
 #ifdef TACTICALTHOTS
@@ -183,6 +188,12 @@ public:
 // The weapon parse function
 bool ReadWeaponDataFromFileForSlot( IFileSystem* filesystem, const char *szWeaponName, 
 	WEAPON_FILE_INFO_HANDLE *phandle, const unsigned char *pICEKey = NULL );
+
+#ifdef MAPBASE
+// For map-specific weapon data
+bool ReadCustomWeaponDataFromFileForSlot( IFileSystem* filesystem, const char *szWeaponName,
+	WEAPON_FILE_INFO_HANDLE *phandle, const unsigned char *pICEKey = NULL );
+#endif
 
 // If weapon info has been loaded for the specified class name, this returns it.
 WEAPON_FILE_INFO_HANDLE LookupWeaponInfoSlot( const char *name );

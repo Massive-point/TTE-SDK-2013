@@ -53,9 +53,9 @@ public:
 	virtual void			SetWeaponModel( const char *pszModelname, CBaseCombatWeapon *weapon );
 
 #ifdef TACTICALTHOTS
-	virtual void			CalcViewModelLag( Vector& origin, QAngle& angles, float ironsightexp );
+	virtual void			CalcViewModelLag(Vector& origin, QAngle& angles, float ironsightexp);
 #else
-	virtual void			CalcViewModelLag( Vector& origin, QAngle& angles, QAngle& original_angles );
+	virtual void			CalcViewModelLag(Vector& origin, QAngle& angles, QAngle& original_angles);
 #endif
 
 	virtual void			CalcViewModelView( CBasePlayer *owner, const Vector& eyePosition, 

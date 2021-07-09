@@ -76,10 +76,12 @@ extern itemFlags_t g_ItemFlags[7];
 
 static CUtlDict< FileWeaponInfo_t*, unsigned short > m_WeaponInfoDatabase;
 
+#ifndef MAPBASE // Mapbase makes weapons in the same slot & position swap each other out, which is a feature mods can intentionally use.
 #ifdef _DEBUG
 // used to track whether or not two weapons have been mistakenly assigned the wrong slot
 bool g_bUsedWeaponSlots[MAX_WEAPON_SLOTS][MAX_WEAPON_POSITIONS] = { 0 };
 
+#endif
 #endif
 
 //-----------------------------------------------------------------------------
@@ -154,8 +156,10 @@ void ResetFileWeaponInfoDatabase( void )
 	}
 	m_WeaponInfoDatabase.RemoveAll();
 
+#ifndef MAPBASE // Mapbase makes weapons in the same slot & position swap each other out, which is a feature mods can intentionally use.
 #ifdef _DEBUG
 	memset(g_bUsedWeaponSlots, 0, sizeof(g_bUsedWeaponSlots));
+#endif
 #endif
 }
 #endif
@@ -279,7 +283,11 @@ bool ReadWeaponDataFromFileForSlot( IFileSystem* filesystem, const char *szWeapo
 	FileWeaponInfo_t *pFileInfo = GetFileWeaponInfoFromHandle( *phandle );
 	Assert( pFileInfo );
 
+#ifdef MAPBASE
+	if ( pFileInfo->bParsedScript && !pFileInfo->bCustom )
+#else
 	if ( pFileInfo->bParsedScript )
+#endif
 		return true;
 
 	char sz[128];
@@ -296,12 +304,58 @@ bool ReadWeaponDataFromFileForSlot( IFileSystem* filesystem, const char *szWeapo
 	if ( !pKV )
 		return false;
 
+#ifdef MAPBASE
+	pFileInfo->bCustom = false;
+#endif
 	pFileInfo->Parse( pKV, szWeaponName );
 
 	pKV->deleteThis();
 
 	return true;
 }
+
+#ifdef MAPBASE
+extern const char *g_MapName;
+
+bool ReadCustomWeaponDataFromFileForSlot( IFileSystem* filesystem, const char *szWeaponName, WEAPON_FILE_INFO_HANDLE *phandle, const unsigned char *pICEKey )
+{
+	if ( !phandle )
+	{
+		Assert( 0 );
+		return false;
+	}
+	
+	*phandle = FindWeaponInfoSlot( szWeaponName );
+	FileWeaponInfo_t *pFileInfo = GetFileWeaponInfoFromHandle( *phandle );
+	Assert( pFileInfo );
+
+	// Just parse the custom script anyway even if it was already loaded. This is because after one is loaded,
+	// there's no way of distinguishing between maps with no custom scripts and maps with their own new custom scripts.
+	//if ( pFileInfo->bParsedScript && pFileInfo->bCustom )
+	//	return true;
+
+	char sz[128];
+	Q_snprintf( sz, sizeof( sz ), "maps/%s_%s", g_MapName, szWeaponName );
+
+	KeyValues *pKV = ReadEncryptedKVFile( filesystem, sz, pICEKey,
+#if defined( DOD_DLL )
+		true			// Only read .ctx files!
+#else
+		false
+#endif
+		);
+
+	if ( !pKV )
+		return false;
+
+	pFileInfo->bCustom = true;
+	pFileInfo->Parse( pKV, szWeaponName );
+
+	pKV->deleteThis();
+
+	return true;
+}
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -353,8 +407,8 @@ FileWeaponInfo_t::FileWeaponInfo_t()
 
 	flSlideLimit = 2.0f;
 
-	vecViewPunchAngles = Vector( 1.5f, 0.0f, 0.0f );
-	vecMinViewPunchAngles = Vector( 8.0f, 2.0f, 0.0f );
+	vecViewPunchAngles = Vector(1.5f, 0.0f, 0.0f);
+	vecMinViewPunchAngles = Vector(8.0f, 2.0f, 0.0f);
 	vecViewSlide.Init();
 	vecViewSlideIronsighted.Init();
 
@@ -430,6 +484,7 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	m_bAllowFlipping = ( pKeyValuesData->GetInt( "AllowFlipping", 1 ) != 0 ) ? true : false;
 	m_bMeleeWeapon = ( pKeyValuesData->GetInt( "MeleeWeapon", 0 ) != 0 ) ? true : false;
 
+#ifndef MAPBASE // Mapbase makes weapons in the same slot & position swap each other out, which is a feature mods can intentionally use.
 #if defined(_DEBUG) && defined(HL2_CLIENT_DLL)
 	// make sure two weapons aren't in the same slot & position
 	if ( iSlot >= MAX_WEAPON_SLOTS ||
@@ -446,6 +501,7 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 		}
 		g_bUsedWeaponSlots[iSlot][iPosition] = true;
 	}
+#endif
 #endif
 
 	// Primary ammo used
@@ -508,106 +564,106 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	}
 
 	// tte weapon recoil settings
-	flSlideLimit = pKeyValuesData->GetFloat( "SlideLimit" );
+	flSlideLimit = pKeyValuesData->GetFloat("SlideLimit");
 
-	vecViewPunchAngles[PITCH] = pKeyValuesData->GetFloat( "ViewKickPITCH" );
-	vecViewPunchAngles[YAW] = pKeyValuesData->GetFloat( "ViewKickYAW" );
-	vecViewPunchAngles[ROLL] = pKeyValuesData->GetFloat( "ViewKickROLL" );
+	vecViewPunchAngles[PITCH] = pKeyValuesData->GetFloat("ViewKickPITCH");
+	vecViewPunchAngles[YAW] = pKeyValuesData->GetFloat("ViewKickYAW");
+	vecViewPunchAngles[ROLL] = pKeyValuesData->GetFloat("ViewKickROLL");
 
-	vecMinViewPunchAngles[PITCH] = pKeyValuesData->GetFloat( "ViewMinKickPITCH" );
-	vecMinViewPunchAngles[YAW] = pKeyValuesData->GetFloat( "ViewMinKickYAW" );
-	vecMinViewPunchAngles[ROLL] = pKeyValuesData->GetFloat( "ViewMinKickROLL" );
+	vecMinViewPunchAngles[PITCH] = pKeyValuesData->GetFloat("ViewMinKickPITCH");
+	vecMinViewPunchAngles[YAW] = pKeyValuesData->GetFloat("ViewMinKickYAW");
+	vecMinViewPunchAngles[ROLL] = pKeyValuesData->GetFloat("ViewMinKickROLL");
 
-	KeyValues *pRecoilViewSlide = pKeyValuesData->FindKey( "ViewSlideRecoil" );
+	KeyValues *pRecoilViewSlide = pKeyValuesData->FindKey("ViewSlideRecoil");
 
-	if( pRecoilViewSlide )
+	if (pRecoilViewSlide)
 	{
-		vecViewSlide.x = pRecoilViewSlide->GetFloat( "up", 0.0f );
-		vecViewSlide.y = pRecoilViewSlide->GetFloat( "right", 0.0f );
-		vecViewSlide.z = pRecoilViewSlide->GetFloat( "roll", 0.0f );
+		vecViewSlide.x = pRecoilViewSlide->GetFloat("up", 0.0f);
+		vecViewSlide.y = pRecoilViewSlide->GetFloat("right", 0.0f);
+		vecViewSlide.z = pRecoilViewSlide->GetFloat("roll", 0.0f);
 	}
 
-	KeyValues *pRecoilViewSlideIronsight = pKeyValuesData->FindKey( "ViewSlideRecoilIronsight" );
+	KeyValues *pRecoilViewSlideIronsight = pKeyValuesData->FindKey("ViewSlideRecoilIronsight");
 
-	if( pRecoilViewSlideIronsight )
+	if (pRecoilViewSlideIronsight)
 	{
-		vecViewSlideIronsighted.x = pRecoilViewSlideIronsight->GetFloat( "up", 0.0f );
-		vecViewSlideIronsighted.y = pRecoilViewSlideIronsight->GetFloat( "right", 0.0f );
-		vecViewSlideIronsighted.z = pRecoilViewSlideIronsight->GetFloat( "roll", 0.0f );
+		vecViewSlideIronsighted.x = pRecoilViewSlideIronsight->GetFloat("up", 0.0f);
+		vecViewSlideIronsighted.y = pRecoilViewSlideIronsight->GetFloat("right", 0.0f);
+		vecViewSlideIronsighted.z = pRecoilViewSlideIronsight->GetFloat("roll", 0.0f);
 	}
 
-	Q_strncpy( m_szSilencerModel, pKeyValuesData->GetString( "SilencerModel" ), MAX_WEAPON_STRING );
+	Q_strncpy(m_szSilencerModel, pKeyValuesData->GetString("SilencerModel"), MAX_WEAPON_STRING);
 
 	// tte bullet spread degrees
-	flHalfRadianBulletSpread = ( ( abs( pKeyValuesData->GetFloat( "BulletSpreadDegrees", 1.0f ) ) * 3.1415 ) / 180.0f ) / 2.0f;
-	flHalfRadianBulletSpreadIronsighted = ( ( abs( pKeyValuesData->GetFloat( "BulletSpreadDegreesIronsighted", 1.0f ) ) * 3.1415 ) / 180.0f ) / 2.0f;
-	flBulletSpreadSilencedModifier = abs( pKeyValuesData->GetFloat( "BulletSpreadSilencedModifier", 1.0f ) );
+	flHalfRadianBulletSpread = ((abs(pKeyValuesData->GetFloat("BulletSpreadDegrees", 1.0f)) * 3.1415) / 180.0f) / 2.0f;
+	flHalfRadianBulletSpreadIronsighted = ((abs(pKeyValuesData->GetFloat("BulletSpreadDegreesIronsighted", 1.0f)) * 3.1415) / 180.0f) / 2.0f;
+	flBulletSpreadSilencedModifier = abs(pKeyValuesData->GetFloat("BulletSpreadSilencedModifier", 1.0f));
 
-	flNPCBlindDelayMod = abs( pKeyValuesData->GetFloat( "NPCBlindTimeMultiplier", 1.0f ) );
+	flNPCBlindDelayMod = abs(pKeyValuesData->GetFloat("NPCBlindTimeMultiplier", 1.0f));
 
-	const char *pTypeString = pKeyValuesData->GetString( "WeaponType", "None" );
+	const char *pTypeString = pKeyValuesData->GetString("WeaponType", "None");
 
 	m_WeaponType = WEAPONTYPE_UNKNOWN;
 
-	if ( !pTypeString )
+	if (!pTypeString)
 	{
-		Assert( false );
+		Assert(false);
 	}
-	else if ( Q_stricmp( pTypeString, "Melee" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Melee") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_MELEE;
 	}
-	else if ( Q_stricmp( pTypeString, "Pistol" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Pistol") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_PISTOL;
 	}
-	else if( Q_stricmp( pTypeString, "Revolver" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Revolver") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_REVOLVER;
 	}
-	else if ( Q_stricmp( pTypeString, "Rifle" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Rifle") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_RIFLE;
 	}
-	else if ( Q_stricmp( pTypeString, "Shotgun" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Shotgun") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_SHOTGUN;
 	}
-	else if ( Q_stricmp( pTypeString, "SniperRifle" ) == 0 )
+	else if (Q_stricmp(pTypeString, "SniperRifle") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_SNIPER_RIFLE;
 	}
-	else if ( Q_stricmp( pTypeString, "SubMachinegun" ) == 0 )
+	else if (Q_stricmp(pTypeString, "SubMachinegun") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_SUBMACHINEGUN;
 	}
-	else if ( Q_stricmp( pTypeString, "Machinegun" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Machinegun") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_MACHINEGUN;
 	}
-	else if ( Q_stricmp( pTypeString, "C4" ) == 0 )
+	else if (Q_stricmp(pTypeString, "C4") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_C4;
 	}
-	else if ( Q_stricmp( pTypeString, "Grenade" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Grenade") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_GRENADE;
 	}
-	else if( Q_stricmp( pTypeString, "Flamethrower" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Flamethrower") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_FLAMETHROWER;
 	}
-	else if( Q_stricmp( pTypeString, "Flaregun" ) == 0 )
+	else if (Q_stricmp(pTypeString, "Flaregun") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_FLAREGUN;
 	}
-	else if( Q_stricmp( pTypeString, "RocketLauncher" ) == 0 )
+	else if (Q_stricmp(pTypeString, "RocketLauncher") == 0)
 	{
 		m_WeaponType = WEAPONTYPE_ROCKETLAUNCHER;
 	}
 	else
 	{
-		Assert( false );
+		Assert(false);
 	}
 #endif
 }

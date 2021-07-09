@@ -22,6 +22,9 @@
 #include "tier0/memdbgon.h"
 
 extern ConVar    sk_plr_dmg_smg1_grenade;	
+#ifdef MAPBASE
+extern ConVar    sk_npc_dmg_smg1_grenade;
+#endif
 
 class CWeaponSMG1 : public CHLSelectFireMachineGun
 {
@@ -47,7 +50,12 @@ public:
 	int		CapabilitiesGet( void ) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
 	int		WeaponRangeAttack2Condition( float flDot, float flDist );
 	Activity	GetPrimaryAttackActivity( void );
-	
+
+	//virtual const Vector& GetBulletSpread( void )
+	//{
+	//	static const Vector cone = VECTOR_CONE_5DEGREES;
+	//	return cone;
+	//}
 #ifndef TACTICALTHOTS
 	virtual const Vector& GetBulletSpread(void)
 	{
@@ -137,6 +145,19 @@ acttable_t	CWeaponSMG1::m_acttable[] =
 
 IMPLEMENT_ACTTABLE(CWeaponSMG1);
 
+#ifdef MAPBASE
+// Allows Weapon_BackupActivity() to access the SMG1's activity table.
+acttable_t *GetSMG1Acttable()
+{
+	return CWeaponSMG1::m_acttable;
+}
+
+int GetSMG1ActtableCount()
+{
+	return ARRAYSIZE(CWeaponSMG1::m_acttable);
+}
+#endif
+
 //=========================================================
 CWeaponSMG1::CWeaponSMG1( )
 {
@@ -204,6 +225,10 @@ void CWeaponSMG1::Operator_ForceNPCFire( CBaseCombatCharacter *pOperator, bool b
 	FireNPCPrimaryAttack( pOperator, vecShootOrigin, vecShootDir );
 }
 
+#ifdef MAPBASE
+float GetCurrentGravity( void );
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -230,6 +255,56 @@ void CWeaponSMG1::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 		}
 		break;
 
+#ifdef MAPBASE
+	case EVENT_WEAPON_AR2_ALTFIRE:
+		{
+			WeaponSound( WPN_DOUBLE );
+
+			CAI_BaseNPC *npc = pOperator->MyNPCPointer();
+			if (!npc)
+				return;
+
+			Vector vecShootOrigin, vecShootDir;
+			vecShootOrigin = pOperator->Weapon_ShootPosition();
+			vecShootDir = npc->GetShootEnemyDir( vecShootOrigin );
+
+			Vector vecTarget = npc->GetAltFireTarget();
+			Vector vecThrow;
+			if (vecTarget == vec3_origin)
+				AngleVectors( npc->EyeAngles(), &vecThrow ); // Not much else to do, unfortunately
+			else
+			{
+				// Because this is happening right now, we can't "VecCheckThrow" and can only "VecDoThrow", you know what I mean?
+				// ...Anyway, this borrows from that so we'll never return vec3_origin.
+				//vecThrow = VecCheckThrow( this, vecShootOrigin, vecTarget, 600.0, 0.5 );
+
+				vecThrow = (vecTarget - vecShootOrigin);
+
+				// throw at a constant time
+				float time = vecThrow.Length() / 600.0;
+				vecThrow = vecThrow * (1.0 / time);
+
+				// adjust upward toss to compensate for gravity loss
+				vecThrow.z += (GetCurrentGravity() * 0.5) * time * 0.5;
+			}
+
+			CGrenadeAR2 *pGrenade = (CGrenadeAR2*)Create( "grenade_ar2", vecShootOrigin, vec3_angle, npc );
+			pGrenade->SetAbsVelocity( vecThrow );
+			pGrenade->SetLocalAngularVelocity( QAngle( 0, 400, 0 ) );
+			pGrenade->SetMoveType( MOVETYPE_FLYGRAVITY, MOVECOLLIDE_FLY_BOUNCE ); 
+
+			pGrenade->SetThrower( npc );
+
+			pGrenade->SetGravity(0.5); // lower gravity since grenade is aerodynamic and engine doesn't know it.
+
+			pGrenade->SetDamage(sk_npc_dmg_smg1_grenade.GetFloat());
+
+			variant_t var;
+			var.SetEntity(pGrenade);
+			npc->FireNamedOutput("OnThrowGrenade", var, pGrenade, npc);
+		}
+		break;
+#else
 		/*//FIXME: Re-enable
 		case EVENT_WEAPON_AR2_GRENADE:
 		{
@@ -256,6 +331,7 @@ void CWeaponSMG1::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 		}
 		break;
 		*/
+#endif
 
 	default:
 		BaseClass::Operator_HandleAnimEvent( pEvent, pOperator );
@@ -288,8 +364,8 @@ bool CWeaponSMG1::Reload( void )
 	bool fRet;
 	//float fCacheTime = m_flNextSecondaryAttack;
 
-	fRet = DefaultReload( GetMaxClip1(), GetMaxClip2(), ACT_VM_RELOAD );
-	if ( fRet )
+	fRet = DefaultReload(GetMaxClip1(), GetMaxClip2(), ACT_VM_RELOAD);
+	if (fRet)
 	{
 		//TACTICALTHOTS
 		//
@@ -302,7 +378,7 @@ bool CWeaponSMG1::Reload( void )
 		// a grenade.
 		//m_flNextSecondaryAttack = GetOwner()->m_flNextAttack = fCacheTime;
 
-		WeaponSound( RELOAD );
+		WeaponSound(RELOAD);
 	}
 
 	return fRet;
@@ -314,12 +390,12 @@ bool CWeaponSMG1::Reload( void )
 void CWeaponSMG1::AddViewKick( void )
 {
 	// Get the view kick
-	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
 
-	if ( pPlayer == NULL )
+	if (pPlayer == NULL)
 		return;
 
-	DoRecoil( pPlayer, GetWeaponRecoilViewKickVector(), m_fFireDuration, GetWeaponRecoilSlideLimit(), GetWeaponRecoilViewSlideVector() );
+	DoRecoil(pPlayer, GetWeaponRecoilViewKickVector(), m_fFireDuration, GetWeaponRecoilSlideLimit(), GetWeaponRecoilViewSlideVector());
 }
 
 //-----------------------------------------------------------------------------

@@ -27,20 +27,20 @@
 class CWeaponCrowbar : public CBaseHLBludgeonWeapon
 {
 public:
-	DECLARE_CLASS( CWeaponCrowbar, CBaseHLBludgeonWeapon );
+	DECLARE_CLASS(CWeaponCrowbar, CBaseHLBludgeonWeapon);
 
 	DECLARE_SERVERCLASS();
 	DECLARE_ACTTABLE();
 
 	CWeaponCrowbar();
 
-	float		GetRange( void )		{	return	CROWBAR_RANGE;	}
-	float		GetFireRate( void )		{	return	CROWBAR_REFIRE;	}
+	float		GetRange(void)		{ return	CROWBAR_RANGE; }
+	float		GetFireRate(void)		{ return	CROWBAR_REFIRE; }
 
-	void		AddViewKick( void );
-	float		GetDamageForActivity( Activity hitActivity );
+	void		AddViewKick(void);
+	float		GetDamageForActivity(Activity hitActivity);
 
-	virtual int WeaponMeleeAttack1Condition( float flDot, float flDist );
+	virtual int WeaponMeleeAttack1Condition(float flDot, float flDist);
 	void		SecondaryAttack(void);
 	void		ChainsawAttack(void);
 	void	ItemPostFrame(void);
@@ -49,11 +49,11 @@ public:
 	void	SpinSpinner(void);
 
 	// Animation event
-	virtual void Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
+	virtual void Operator_HandleAnimEvent(animevent_t *pEvent, CBaseCombatCharacter *pOperator);
 
 private:
 	// Animation event handlers
-	void HandleAnimEventMeleeHit( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
+	void HandleAnimEventMeleeHit(animevent_t *pEvent, CBaseCombatCharacter *pOperator);
 
 	float	m_flNextSpinTime;
 	float	m_flNextChainsawTime;

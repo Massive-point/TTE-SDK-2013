@@ -181,9 +181,9 @@ bool CBaseHLCombatWeapon::WeaponShouldBeLowered( void )
 #endif
 
 #ifdef TACTICALTHOTS
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>( GetOwner() );
-	
-	if( pPlayer && pPlayer->IsSprinting() && !m_bInReload )
+	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(GetOwner());
+
+	if (pPlayer && pPlayer->IsSprinting() && !m_bInReload)
 	{
 		return true;
 	}
