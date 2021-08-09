@@ -31,6 +31,15 @@
     <Filter Include="Source Files\HL2 DLL">
       <UniqueIdentifier>{3C43D38A-46AF-2183-A5E5-44383B1D2652}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HL2MP">
+      <UniqueIdentifier>{2BA678C8-595F-A004-FD96-60E33CA8DE83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HL2MP\Weapons">
+      <UniqueIdentifier>{382A0C79-1859-D554-1EB7-DCBE8F115956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Mapbase">
+      <UniqueIdentifier>{96AE379F-B108-4424-9880-320ED1E65A8D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Precompiled Header">
       <UniqueIdentifier>{A7D26A13-21F4-C6B5-5922-8A4FB05AF07D}</UniqueIdentifier>
     </Filter>
@@ -54,6 +63,9 @@
     <Library Include="..\..\lib\public\choreoobjects.lib">
       <Filter>Link Libraries</Filter>
     </Library>
+    <Library Include="..\..\lib\public\discord-rpc.lib">
+      <Filter>Link Libraries</Filter>
+    </Library>
     <Library Include="..\..\lib\public\dmxloader.lib">
       <Filter>Link Libraries</Filter>
     </Library>
@@ -75,6 +87,9 @@
     <Library Include="..\..\lib\public\particles.lib">
       <Filter>Link Libraries</Filter>
     </Library>
+    <Library Include="..\..\lib\public\raytrace.lib">
+      <Filter>Link Libraries</Filter>
+    </Library>
     <Library Include="..\..\lib\public\steam_api.lib">
       <Filter>Link Libraries</Filter>
     </Library>
@@ -91,6 +106,9 @@
       <Filter>Link Libraries</Filter>
     </Library>
     <Library Include="..\..\lib\public\vgui_controls.lib">
+      <Filter>Link Libraries</Filter>
+    </Library>
+    <Library Include="..\..\lib\public\vscript.lib">
       <Filter>Link Libraries</Filter>
     </Library>
     <Library Include="..\..\lib\public\vstdlib.lib">
@@ -1769,6 +1787,18 @@
     <ClInclude Include="..\..\game\shared\baseprojectile.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="c_baselesson.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_gameinstructor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_movie_display.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_postprocesscontroller.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="c_props.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1796,6 +1826,9 @@
     <ClInclude Include="commentary_modelviewer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="hud_locator_target.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\game\shared\particle_parse.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1815,6 +1848,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="viewpostprocess.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vscript_client.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\shared\vscript_shared.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="worldlight.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="game_controls\basemodel_panel.h">
@@ -1864,6 +1906,30 @@
     </ClInclude>
     <ClInclude Include="hl2\hud_suitpower.h">
       <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\shared\hl2mp\weapon_stunstick.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\shared\hl2mp\weapon_slam.h">
+      <Filter>Source Files\HL2MP\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="mapbase\c_func_fake_worldportal.h">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\shared\mapbase\MapEdit.h">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\shared\mapbase\matchers.h">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\shared\mapbase\vscript_funcs_shared.h">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\shared\mapbase\vscript_singletons.h">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\shared\mapbase\weapon_custom_scripted.h">
+      <Filter>Source Files\Mapbase</Filter>
     </ClInclude>
     <ClInclude Include="sixense\in_sixense.h">
       <Filter>Source Files\Sixense</Filter>
@@ -2008,6 +2074,9 @@
     <ClCompile Include="c_baseflex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="c_baselesson.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="c_baseplayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2032,7 +2101,13 @@
     <ClCompile Include="c_entityparticletrail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="c_env_dof_controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="c_env_fog_controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="c_env_global_light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="c_env_particlescript.cpp">
@@ -2086,6 +2161,9 @@
     <ClCompile Include="c_func_tracktrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="c_gameinstructor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="c_gib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2099,6 +2177,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C_MaterialModifyControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="c_movie_display.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="c_particle_system.cpp">
@@ -2126,6 +2207,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="c_point_commentary_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="c_postprocesscontroller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="c_props.cpp">
@@ -2462,6 +2546,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hud_lcd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hud_locator_target.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hud_msg.cpp">
@@ -2848,6 +2935,9 @@
     <ClCompile Include="vgui_messagechars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vgui_movie_display.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="vgui_netgraphpanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2896,6 +2986,12 @@
     <ClCompile Include="..\..\game\shared\voice_status.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vscript_client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\vscript_shared.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="warp_overlay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2915,6 +3011,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WorldDimsProxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="worldlight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="game_controls\basemodel_panel.cpp">
@@ -3064,9 +3163,6 @@
     <ClCompile Include="hl2\c_weapon_physcannon.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
-    <ClCompile Include="hl2\c_weapon_stunstick.cpp">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClCompile>
     <ClCompile Include="hl2\clientmode_hlnormal.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
@@ -3156,6 +3252,63 @@
     </ClCompile>
     <ClCompile Include="hl2\vgui_rootpanel_hl2.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\hl2mp\weapon_stunstick.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\hl2mp\weapon_slam.cpp">
+      <Filter>Source Files\HL2MP\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="mapbase\c_func_clientclip.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="mapbase\c_func_fake_worldportal.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="mapbase\c_point_glow.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="mapbase\c_vgui_text_display.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\logic_script_client.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\mapbase_game_log.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\mapbase_rpc.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\mapbase_shared.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\mapbase_usermessages.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\MapEdit.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\matchers.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\vscript_consts_shared.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\vscript_consts_weapons.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\vscript_funcs_hl2.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\vscript_funcs_shared.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\vscript_singletons.cpp">
+      <Filter>Source Files\Mapbase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\mapbase\weapon_custom_scripted.cpp">
+      <Filter>Source Files\Mapbase</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files\Precompiled Header</Filter>
@@ -3379,7 +3532,13 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <None Include="vscript_client.nut">
+      <Filter>Source Files</Filter>
+    </None>
     <None Include="..\..\game\client\client_base.vpc">
+      <Filter>VPC Scripts</Filter>
+    </None>
+    <None Include="..\..\game\client\client_mapbase.vpc">
       <Filter>VPC Scripts</Filter>
     </None>
     <None Include="..\..\vpc_scripts\loadaddress.vpc">

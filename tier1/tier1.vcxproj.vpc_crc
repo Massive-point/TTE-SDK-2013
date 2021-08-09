@@ -1,12 +1,12 @@
 [vpc crc file version 2]
-8209bbc3 D:\D_Drive_10.27.2020\TTE-SDK-2013\devtools\bin\vpc.exe
-_Nc_VS2013/vpcgame:episodic_
-e5d209f4 tier1.vpc
+8209bbc3 D:\TTE_Src\TTE-SDK-2013\devtools\bin\vpc.exe
+_Nc_VS2013/vpcgame:tte_
+7495b6b2 tier1.vpc
 30577f77 ..\vpc_scripts\source_lib_base.vpc
 d752cf80 ..\vpc_scripts\platform_dirs.vpc
-6c4a5ff1 ..\vpc_scripts\source_base.vpc
+b1436e6f ..\vpc_scripts\source_base.vpc
 5dd0225a ..\vpc_scripts\source_lib_win32_base.vpc
-6c5e6545 ..\vpc_scripts\version.vpc
+486b766d ..\vpc_scripts\version.vpc
 fe1ec01f ..\vpc_scripts\source_lib_win32_debug.vpc
 e0f4e727 ..\vpc_scripts\source_lib_win32_release.vpc
 34c37fcf ..\vpc_scripts\source_win32_base.vpc

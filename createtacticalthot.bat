@@ -1,4 +1,4 @@
-devtools\bin\vpc.exe /episodic +game /mksln games.sln
+devtools\bin\vpc.exe /TTE +game /mksln tte_src.sln
 
 
 pause

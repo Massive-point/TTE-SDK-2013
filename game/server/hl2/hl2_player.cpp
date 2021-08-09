@@ -1615,6 +1615,14 @@ void CHL2_Player::Spawn(void)
 	GetPlayerProxy();
 
 	SetFlashlightPowerDrainScale( 1.0f );
+
+	//CSingleUserRecipientFilter user(this);
+	//user.MakeReliable(); Needed?
+	//UserMessageBegin(user, "MoneyInitHandler");
+	//WRITE_STRING("blah");//password
+	//WRITE_STRING("blah");//what's displayed on LCD screen
+	//WRITE_BOOL(0);//hide password option
+	//MessageEnd();
 }
 
 //-----------------------------------------------------------------------------
